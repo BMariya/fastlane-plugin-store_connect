@@ -1,0 +1,11 @@
+lane :test_rustore_connect do
+  rustore_connect
+end
+
+lane :test_appgallery_connect do
+  appgallery_connect
+end
+
+lane :test_galaxy_connect do
+  galaxy_connect
+end
