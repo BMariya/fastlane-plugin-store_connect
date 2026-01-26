@@ -56,9 +56,11 @@ module Fastlane
         end
       end
 
-      def self.update_release_notes(token, account_id, content_id, ru_release_notes_path, en_release_notes_path)
+      def self.update_release_notes(token, account_id, content_id, ru_release_notes_path, en_release_notes_path, ru_app_title_path, ru_description_path)
         ru_release_notes = File.read(ru_release_notes_path)
         en_release_notes = File.read(en_release_notes_path)
+        ru_app_title = File.read(ru_app_title_path)
+        ru_description = File.read(ru_description_path)
         url = "/seller/contentUpdate"
         response = connection.post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
@@ -69,7 +71,7 @@ module Fastlane
             paid: "N",
             publicationType: "01",
             newFeature: en_release_notes,
-            addLanguage: [{ languagecode: "RUS", newFeature: ru_release_notes}]
+            addLanguage: [{ languagecode: "RUS", newFeature: ru_release_notes, appTitle: ru_app_title, description: ru_description}]
           }
         end
         if response.status == 200

@@ -12,10 +12,12 @@ module Fastlane
         aab_google_path = params[:aab_google_path]
         ru_release_notes_path = params[:ru_release_notes_path]
         en_release_notes_path = params[:en_release_notes_path]
+        ru_app_title_path = params[:ru_app_title_path]
+        ru_description_path = params[:ru_description_path]
         # Получение авторизационного токена.
         token = Helper::GalaxyConnectHelper.get_token(account_id, private_key_path)
         # Добавление описания.
-        Helper::GalaxyConnectHelper.update_release_notes(token, account_id, content_id, ru_release_notes_path, en_release_notes_path)
+        Helper::GalaxyConnectHelper.update_release_notes(token, account_id, content_id, ru_release_notes_path, en_release_notes_path, ru_app_title_path, ru_description_path)
         # Удаление старого файла aab.
         elper::GalaxyConnectHelper.delete_old_aabs(token, account_id, content_id)
         # Добавление нового файла aab.
@@ -66,6 +68,16 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :en_release_notes_path,
                                   env_name: "GALAXY_EN_RELEASE_NOTES_PATH",
                                description: "Путь до файла с описанием «New Feature»",
+                                  optional: false,
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :ru_app_title_path,
+                                  env_name: "GALAXY_RU_APP_TITLE_PATH",
+                               description: "Путь до файла с названием приложения",
+                                  optional: false,
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :ru_description_path,
+                                  env_name: "GALAXY_RU_DESCRIPTION_PATH",
+                               description: "Путь до файла с описанием приложения",
                                   optional: false,
                                       type: String)
         ]
