@@ -5,8 +5,10 @@ module Fastlane
   module Actions
     class AppgalleryConnectAction < Action
       def self.run(params)
-        client_id = params[:client_id]
-        client_secret = params[:client_secret]
+        client_id_path = params[:client_id_path]
+        client_id = File.read(client_id_path)
+        client_secret_path = params[:client_secret_path]
+        client_secret = File.read(client_secret_path)
         app_id = params[:app_id]
         aab_hms_path = params[:aab_hms_path]
         message_for_moderator_path = params[:message_for_moderator_path]
@@ -59,14 +61,14 @@ module Fastlane
 
       def self.available_options
         [
-          FastlaneCore::ConfigItem.new(key: :client_id,
-                                  env_name: "APPGALLERY_CLIENT_ID",
-                               description: "Huawei AppGallery Connect Client ID",
+          FastlaneCore::ConfigItem.new(key: :client_id_path,
+                                  env_name: "APPGALLERY_CLIENT_ID_PATH",
+                               description: "Путь до файла с Huawei AppGallery Connect Client ID",
                                   optional: false,
                                       type: String),
-          FastlaneCore::ConfigItem.new(key: :client_secret,
-                                  env_name: "APPGALLERY_CLIENT_SECRET",
-                               description: "Huawei AppGallery Connect Client Secret",
+          FastlaneCore::ConfigItem.new(key: :client_secret_path,
+                                  env_name: "APPGALLERY_CLIENT_SECRET_PATH",
+                               description: "Путь до файла с Huawei AppGallery Connect Client Secret",
                                   optional: false,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :app_id,

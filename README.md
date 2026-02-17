@@ -28,9 +28,24 @@ rustore_connect(
 )
 
 appgallery_connect(
+  client_id_path: ENV["APPGALLERY_CLIENT_ID_PATH"], # path to Huawei AppGallery Connect client id
+  client_secret_path: ENV["APPGALLERY_CLIENT_SECRET_PATH"], # path to Huawei AppGallery Connect client secret
+  app_id: ENV["APPGALLERY_APP_ID"], # Huawei AppGallery Connect app id
+  aab_hms_path: ENV["APPGALLERY_AAB_PATH"], # path to aab with hms services
+  message_for_moderator_path: ENV["APPGALLERY_MESSAGE_FOR_MODERATOR_PATH"], # path to moderator message
+  release_notes_path: ENV["APPGALLERY_RELEASE_NOTES_PATH"], # path to release notes
+  release_percent: ENV["APPGALLERY_RELEASE_PERCENT"] # percent for publication
 )
 
 galaxy_connect(
+  content_id: ENV["GALAXY_CONTENT_ID"], # Galaxy Content Id
+  account_id_path: ENV["GALAXY_ACCOUNT_ID_PATH"], # path to Galaxy account id
+  private_key_path: ENV["GALAXY_PRIVATE_KEY_PATH"], # path to Galaxy private key
+  aab_google_path: ENV["GALAXY_AAB_GOOGLE_PATH"], # path to aab with google services
+  ru_release_notes_path: ENV["GALAXY_RU_RELEASE_NOTES_PATH"], # path to ru release notes
+  en_release_notes_path: ENV["GALAXY_EN_RELEASE_NOTES_PATH"], # path to en release notes
+  ru_app_title_path: ENV["GALAXY_RU_APP_TITLE_PATH"], # path to ru app title
+  ru_description_path: ENV["GALAXY_RU_DESCRIPTION_PATH"] # path to ru description
 )
 ```
 

@@ -19,7 +19,7 @@ module Fastlane
         # Добавление описания.
         Helper::GalaxyConnectHelper.update_release_notes(token, account_id, content_id, ru_release_notes_path, en_release_notes_path, ru_app_title_path, ru_description_path)
         # Удаление старого файла aab.
-        elper::GalaxyConnectHelper.delete_old_aabs(token, account_id, content_id)
+        Helper::GalaxyConnectHelper.delete_old_aabs(token, account_id, content_id)
         # Добавление нового файла aab.
         Helper::GalaxyConnectHelper.upload_aab_google(token, account_id, content_id, aab_google_path)
         # Отправка на ревью.

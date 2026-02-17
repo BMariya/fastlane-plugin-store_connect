@@ -6,12 +6,12 @@ module Fastlane
 
   module Helper
     class GalaxyConnectHelper
-      def self.connection
+      def self.connection(base_url = "https://devapi.samsungapps.com")
         require 'faraday'
         require 'faraday_middleware'
 
         options = {
-          url: "https://devapi.samsungapps.com",
+          url: base_url,
           request: {
             timeout: 1200,
             open_timeout: 180
@@ -46,7 +46,7 @@ module Fastlane
       def self.get_token(account_id, private_key_path)
         jwt_token = generate_jwt_token(account_id, private_key_path)
         url = "/auth/accessToken"
-        response = connection.post(url) do |req|
+        response = connection().post(url) do |req|
           req.headers['Authorization'] = "Bearer #{jwt_token}"
         end
         if response.status == 200
@@ -62,7 +62,7 @@ module Fastlane
         ru_app_title = File.read(ru_app_title_path)
         ru_description = File.read(ru_description_path)
         url = "/seller/contentUpdate"
-        response = connection.post(url) do |req|
+        response = connection().post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
           req.headers['service-account-id'] = account_id
           req.body = {
@@ -75,7 +75,7 @@ module Fastlane
           }
         end
         if response.status == 200
-          if response.body["contentStatus"] == "REGISTERING" && response.body["status"] == "OK"
+          if response.body["contentStatus"] == "REGISTERING" && response.body["httpStatus"] == "OK"
             UI.message("update_release_notes --> OK")
           else
             raise "update_release_notes --> #{response.body}"
@@ -87,7 +87,7 @@ module Fastlane
 
       def self.get_binary_seq_for_delete(token, account_id, content_id)
         url = "/seller/contentInfo?contentId=#{content_id}"
-        response = connection.get(url) do |req|
+        response = connection().get(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
           req.headers['service-account-id'] = account_id
         end
@@ -101,7 +101,10 @@ module Fastlane
       def self.delete_old_aabs(token, account_id, content_id)
         binary_seq = get_binary_seq_for_delete(token, account_id, content_id)
         url = "/seller/v2/content/binary?contentId=#{content_id}&binarySeq=#{binary_seq}"
-        response = connection.delete(url)
+        response = connection().delete(url) do |req|
+          req.headers['Authorization'] = "Bearer #{token}"
+          req.headers['service-account-id'] = account_id
+        end
         if response.status == 200
           if response.body["resultMessage"] == "Ok"
             UI.message("delete_old_aabs --> OK")
@@ -115,7 +118,10 @@ module Fastlane
 
       def self.get_upload_sessionId()
         url = "/seller/createUploadSessionId"
-        response = connection.post(url)
+        response = connection().post(url) do |req|
+          req.headers['Authorization'] = "Bearer #{token}"
+          req.headers['service-account-id'] = account_id
+        end
         if response.status == 200
           return response.body["sessionId"]
         else
@@ -126,7 +132,7 @@ module Fastlane
       def self.upload_file(token, account_id, file_path)
         session_id = get_upload_sessionId()
         url = "/galaxyapi/fileUpload"
-        response = connection.post(url) do |req|
+        response = connection("https://seller.samsungapps.com").post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
           req.headers['service-account-id'] = account_id
           req.body = { sessionId: session_id, file: Faraday::Multipart::FilePart.new(file_path, 'application/x-authorware-bin') }
@@ -141,7 +147,7 @@ module Fastlane
       def self.upload_aab_google(token, account_id, content_id, aab_google_path)
         file_key = upload_file(token, account_id, aab_google_path)
         url = "seller/v2/content/binary"
-        response = connection.post(url) do |req|
+        response = connection().post(url) do |req|
           req.body = { contentId: content_id, gms: "Y", filekey: file_key }
         end
         if response.status == 200
@@ -157,7 +163,7 @@ module Fastlane
 
       def self.submit(token, account_id, content_id)
         url = "/seller/contentSubmit"
-        response = connection.post(url) do |req|
+        response = connection().post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
           req.headers['service-account-id'] = account_id
           req.body = { contentId: content_id }
