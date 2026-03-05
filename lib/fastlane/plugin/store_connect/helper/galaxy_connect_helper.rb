@@ -116,7 +116,7 @@ module Fastlane
         end
       end
 
-      def self.get_upload_sessionId()
+      def self.get_upload_sessionId(token, account_id)
         url = "/seller/createUploadSessionId"
         response = connection().post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
@@ -130,7 +130,7 @@ module Fastlane
       end
 
       def self.upload_file(token, account_id, file_path)
-        session_id = get_upload_sessionId()
+        session_id = get_upload_sessionId(token, account_id)
         url = "/galaxyapi/fileUpload"
         response = connection("https://seller.samsungapps.com").post(url) do |req|
           req.headers['Authorization'] = "Bearer #{token}"
