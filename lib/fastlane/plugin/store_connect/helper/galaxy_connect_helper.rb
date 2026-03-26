@@ -148,6 +148,8 @@ module Fastlane
         file_key = upload_file(token, account_id, aab_google_path)
         url = "seller/v2/content/binary"
         response = connection().post(url) do |req|
+          req.headers['Authorization'] = "Bearer #{token}"
+          req.headers['service-account-id'] = account_id
           req.body = { contentId: content_id, gms: "Y", filekey: file_key }
         end
         if response.status == 200
