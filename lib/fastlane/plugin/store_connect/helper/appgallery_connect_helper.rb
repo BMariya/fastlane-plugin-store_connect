@@ -22,7 +22,7 @@ module Fastlane
         return result_json['access_token']
       end
 
-      def self.upload_app(token, client_id, app_id, aab_path)
+      def self.upload_app(token, client_id, app_id, aab_path, app_version_code)
         UI.message("Fetching upload URL")
 
         responseData = JSON.parse("{}")
@@ -32,7 +32,7 @@ module Fastlane
         file_size_in_bytes = File.size(aab_path.to_s)
         sha256 = Digest::SHA256.file(aab_path).hexdigest
 
-        upload_filename = "#{ENV['VERSION_CODE_BY_GITLAB'] || 'release'}.aab"
+        upload_filename = "#{app_version_code}.aab"
         uri = URI.parse("https://connect-api.cloud.huawei.com/api/publish/v2/upload-url/for-obs?appId=#{app_id}&fileName=#{upload_filename}&contentLength=#{file_size_in_bytes}&suffix=aab")
 
         http = Net::HTTP.new(uri.host, uri.port)

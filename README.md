@@ -10,7 +10,7 @@ fastlane add_plugin store_connect, git: "https://github.com/BMariya/fastlane-plu
 
 ## About store_connect
 
-Allows send application for moderation to Rustore, Appgallery and Galaxy
+Allows to send application for moderation to Rustore, Appgallery and Galaxy
 
 ## Example
 
@@ -32,6 +32,7 @@ appgallery_connect(
   client_secret_path: ENV["APPGALLERY_CLIENT_SECRET_PATH"], # path to Huawei AppGallery Connect client secret
   app_id: ENV["APPGALLERY_APP_ID"], # Huawei AppGallery Connect app id
   aab_hms_path: ENV["APPGALLERY_AAB_PATH"], # path to aab with hms services
+  app_version_code: ENV["APPGALLERY_APP_VERSION_CODE"], # version code of the app
   message_for_moderator_path: ENV["APPGALLERY_MESSAGE_FOR_MODERATOR_PATH"], # path to moderator message
   release_notes_path: ENV["APPGALLERY_RELEASE_NOTES_PATH"], # path to release notes
   release_percent: ENV["APPGALLERY_RELEASE_PERCENT"] # percent for publication

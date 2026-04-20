@@ -11,6 +11,7 @@ module Fastlane
         client_secret = File.read(client_secret_path)
         app_id = params[:app_id]
         aab_hms_path = params[:aab_hms_path]
+        app_version_code = params[:app_version_code]
         message_for_moderator_path = params[:message_for_moderator_path]
         release_notes_path = params[:release_notes_path]
         release_percent = params[:release_percent]
@@ -23,7 +24,7 @@ module Fastlane
         else
           Helper::AppgalleryConnectHelper.update_release_notes(token, client_id, app_id, release_notes_path)
 
-          upload_app = Helper::AppgalleryConnectHelper.upload_app(token, client_id, app_id, aab_hms_path)
+          upload_app = Helper::AppgalleryConnectHelper.upload_app(token, client_id, app_id, aab_hms_path, app_version_code)
 
           UI.message("Waiting 10 seconds for upload to get processed...")
           sleep(10)
@@ -79,6 +80,11 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :aab_hms_path,
                                   env_name: "APPGALLERY_AAB_PATH",
                                description: "Путь до файла aab с hms-сервисами",
+                                  optional: false,
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :app_version_code,
+                                  env_name: "APPGALLERY_APP_VERSION_CODE",
+                               description: "Номер версии приложения",
                                   optional: false,
                                       type: String),
           FastlaneCore::ConfigItem.new(key: :message_for_moderator_path,
