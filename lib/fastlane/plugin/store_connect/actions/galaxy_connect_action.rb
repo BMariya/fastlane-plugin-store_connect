@@ -14,6 +14,7 @@ module Fastlane
         en_release_notes_path = params[:en_release_notes_path]
         ru_app_title_path = params[:ru_app_title_path]
         ru_description_path = params[:ru_description_path]
+        release_percent = params[:release_percent]
         # Получение авторизационного токена.
         token = Helper::GalaxyConnectHelper.get_token(account_id, private_key_path)
         # Добавление описания.
@@ -21,7 +22,10 @@ module Fastlane
         # Удаление старого файла aab.
         Helper::GalaxyConnectHelper.delete_old_aabs(token, account_id, content_id)
         # Добавление нового файла aab.
-        Helper::GalaxyConnectHelper.upload_aab_google(token, account_id, content_id, aab_google_path)
+        binary_seq = Helper::GalaxyConnectHelper.upload_aab_google(token, account_id, content_id, aab_google_path)
+        # Включение процентной раскатки.
+        Helper::GalaxyConnectHelper.add_binary_to_staged_rollout(token, account_id, content_id, binary_seq)
+        Helper::GalaxyConnectHelper.enable_staged_rollout(token, account_id, content_id, release_percent)
         # Отправка на ревью.
         Helper::GalaxyConnectHelper.submit(token, account_id, content_id)
       end
@@ -79,7 +83,12 @@ module Fastlane
                                   env_name: "GALAXY_RU_DESCRIPTION_PATH",
                                description: "Путь до файла с описанием приложения",
                                   optional: false,
-                                      type: String)
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :release_percent,
+                                  env_name: "GALAXY_RELEASE_PERCENT",
+                               description: "Процент для частичной публикации приложения",
+                                  optional: false,
+                                      type: Integer)
         ]
       end
 

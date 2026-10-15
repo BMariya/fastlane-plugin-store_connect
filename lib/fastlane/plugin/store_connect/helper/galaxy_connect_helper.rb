@@ -155,11 +155,48 @@ module Fastlane
         if response.status == 200
           if response.body["resultMessage"] == "Ok"
             UI.message("update_release_notes --> OK")
+            return response.body["data"]["binarySeq"]
           else
             raise "update_release_notes --> #{response.body}"
           end
         else
           raise "update_release_notes --> #{response.status}"
+        end
+      end
+
+      def self.add_binary_to_staged_rollout(token, account_id, content_id, binary_seq)
+        url = "/seller/v2/content/stagedRolloutBinary"
+        response = connection().put(url) do |req|
+          req.headers['Authorization'] = "Bearer #{token}"
+          req.headers['service-account-id'] = account_id
+          req.body = { contentId: content_id, function: "ADD", binarySeq: binary_seq }
+        end
+        if response.status == 200
+          if response.body["resultCode"] == "0000" && response.body["resultMessage"] == "Ok"
+            UI.message("add_binary_to_staged_rollout --> OK")
+          else
+            raise "add_binary_to_staged_rollout --> #{response.body}"
+          end
+        else
+          raise "add_binary_to_staged_rollout --> #{response.status}"
+        end
+      end
+
+      def self.enable_staged_rollout(token, account_id, content_id, rollout_percent)
+        url = "/seller/v2/content/stagedRolloutRate"
+        response = connection().put(url) do |req|
+          req.headers['Authorization'] = "Bearer #{token}"
+          req.headers['service-account-id'] = account_id
+          req.body = { contentId: content_id, function: "ENABLE_ROLLOUT", appStatus: "REGISTRATION", rolloutRate: rollout_percent }
+        end
+        if response.status == 200
+          if response.body["resultCode"] == "0000" && response.body["resultMessage"] == "Ok"
+            UI.message("enable_staged_rollout --> OK (#{rollout_percent}%)")
+          else
+            raise "enable_staged_rollout --> #{response.body}"
+          end
+        else
+          raise "enable_staged_rollout --> #{response.status}"
         end
       end
 
